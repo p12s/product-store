@@ -14,21 +14,24 @@ mv client/.env.example client/.env
 
 docker-compose up --build
 ```
-Run gRPC-client:
-```sh
-cd client
-run cmd/main.go
-```
 Stop:  
 ```sh
 docker-compose down
 ```
-
-There is a bug with migrations - they are not performed automatically as they should.  
-You have to run the command manually.
-```
-migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' up
-```
+  
+# What is going on there
+What does the client do:  
+- sending address to download products (for example, http://164.92.251.245:8080/api/v1/products/)  
+- requesting products with pagination functionality (limit, skip)  
+- requesting products continuously, simulate endless loading (based on bidirectional-stream)  
+  
+What does the server do:  
+- going to the url, download and save the csv-file, extract the products from it, save to your database  
+- giving products with pagination functionality (limit, skip)  
+- giving away products in stream  
+  
+Services are raised in docker-compose, the client starts and executes requests with output to the console, and then exits.  
+The server continues to work  
 
 # Separate services
 [Client](client)  
