@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package product;
+option go_package = "./pb";
+
+import "google/protobuf/timestamp.proto";
+
+// ProductService
+service ProductService {
+  // Unary
+  rpc LoadProducts(LoadProductsRequest) returns (LoadProductsResponse) {}
+  rpc GetProducts(GetProductsRequest) returns (GetProductsResponse) {}
+  // Bi-directional steaming
+  rpc GetProductsInfinite(stream GetProductsRequest) returns (stream GetProductsResponse) {}
+}
+
+message LoadProductsRequest {
+  string url = 1;
+}
+message LoadProductsResponse {
+  int64 code = 1;
+  string message = 2;
+}
+
+message GetProductsRequest {
+  int64 limit = 1;
+  int64 skip = 2;
+  SortOrder priceOrder = 3;
+}
+enum SortOrder {
+  ASC = 0;
+  DESC = 1;
+}
+message GetProductsResponse {
+  repeated Product product = 1;
+}
+message Product {
+  string name = 1;
+  int64 price = 2;
+  int64 price_change_count = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
