@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  client:
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    depends_on:
+      - server
+
+  server:
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - 81:81
+    depends_on:
+      - mongo
+
+  mongo:
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+        window: 60s
+    image: mongo:5.0.4
+    volumes:
+      - './.database/mongo/data:/data/db'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=g0langn1nja
+    ports:
+      - 27017:27017
