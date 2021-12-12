@@ -36,6 +36,9 @@ func NewProduct(products *mongo.Collection) *Product {
 	return &Product{products: products}
 }
 
+// TODO Need to refactor this method - it is too big and does a lot. 
+// Break it down into simple methods (insert, update, delete) with the database
+// and move the business logic to the services layer.
 // SaveOrUpdate
 func (r *Product) SaveOrUpdate(ctx context.Context, products []domain.Product) error {
 	// every product
